@@ -53,7 +53,7 @@ public class CategorizationFilterTag extends IncludeTag {
 	}
 
 	private static final String _PAGE =
-		"/html/taglib/ui/categorization_filter/page.jsp";
+		"/categorization_filter/page.jsp";
 
 	private String _assetType;
 	private PortletURL _portletURL;

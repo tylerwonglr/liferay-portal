@@ -14,7 +14,7 @@
  */
 --%>
 
-<%@ include file="/html/taglib/init.jsp" %>
+<%@ include file="/categorization_filter/init.jsp" %>
 
 <portlet:defineObjects />
 
