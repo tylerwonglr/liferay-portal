@@ -57,7 +57,6 @@ PanelCategory panelCategory = siteAdministrationPanelCategoryDisplayContext.getP
 					points: [A.WidgetPositionAlign.TL, A.WidgetPositionAlign.TR]
 				},
 				bodyContent: A.one('#<portlet:namespace/>siteSelectorContent'),
-				constrain: true,
 				cssClass: 'product-menu',
 				hideOn: [
 					{
