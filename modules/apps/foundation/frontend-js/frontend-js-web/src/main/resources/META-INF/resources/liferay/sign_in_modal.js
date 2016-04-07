@@ -184,6 +184,10 @@ AUI.add(
 
 							dialog.show();
 						}
+
+						setTimeout(function() {
+							Liferay.Util.focusFormField(A.one('#_com_liferay_login_web_portlet_LoginPortlet_login'));
+						}, 0);
 					}
 				}
 			}
