@@ -17,6 +17,7 @@ package com.liferay.dynamic.data.mapping.util;
 import com.liferay.dynamic.data.mapping.BaseDDMTestCase;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
@@ -127,6 +128,63 @@ public class DDMFormTemplateSynchonizerTest extends BaseDDMTestCase {
 		ddmFormTemplateSynchonizer.synchronize();
 
 		testFormTemplatesAfterUpdateRequiredFieldProperties();
+	}
+
+	@Test
+	public void testUpdateTemplateSelectOptionsForStructureUpdate()
+		throws Exception {
+
+		DDMForm structureDDMForm = createDDMForm();
+
+		DDMFormField ddmFormField = new DDMFormField("name1", "select");
+
+		ddmFormField.setDataType("string");
+		ddmFormField.setType("select");
+		ddmFormField.setRequired(true);
+
+		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
+
+		ddmFormFieldOptions.addOptionLabel("value 1", LocaleUtil.US, "Label 1");
+		ddmFormFieldOptions.addOptionLabel("value 2", LocaleUtil.US, "Label 2");
+		ddmFormFieldOptions.addOptionLabel("value 3", LocaleUtil.US, "Label 3");
+
+		ddmFormField.setDDMFormFieldOptions(ddmFormFieldOptions);
+
+		LocalizedValue label = ddmFormField.getLabel();
+
+		label.addString(LocaleUtil.US, StringUtil.randomString());
+
+		addDDMFormField(
+			structureDDMForm, ddmFormField);
+
+		createFormTemplates(structureDDMForm);
+
+		DDMFormTemplateSynchonizer ddmFormTemplateSynchonizer =
+			new MockDDMFormTemplateSynchronizer(structureDDMForm);
+
+		ddmFormTemplateSynchonizer.synchronize();
+
+		testFormTemplatesAfterUpdateRequiredSelect();
+
+		ddmFormFieldOptions.addOptionLabel("value 4", LocaleUtil.US, "Label 4");
+
+//		DDMFormTemplateSynchonizer ddmFormTemplateSynchonizer2 =
+//			new MockDDMFormTemplateSynchronizer(structureDDMForm);
+
+		updateDDMFormSelectFieldOptions(structureDDMForm, "name1", ddmFormFieldOptions);
+
+		ddmFormTemplateSynchonizer.synchronize();
+
+		System.out.println(_createDDMTemplate.getScript());
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println(_editDDMTemplate.getScript());
+
+		testFormTemplatesAfterUpdateRequiredSelect();
+
 	}
 
 	protected void addDDMFormField(DDMForm ddmForm, DDMFormField ddmFormField) {
@@ -275,6 +333,27 @@ public class DDMFormTemplateSynchonizerTest extends BaseDDMTestCase {
 		Assert.assertFalse(name2DDMFormField.isRequired());
 	}
 
+	protected void testFormTemplatesAfterUpdateRequiredSelect()
+		throws Exception {
+
+		// Edit
+
+		Map<String, DDMFormField> ddmFormFieldsMap = getDDMFormFieldsMap(
+			_editDDMTemplate);
+
+		DDMFormField name1DDMFormField = ddmFormFieldsMap.get("name1");
+
+		Assert.assertNotNull(name1DDMFormField);
+
+		// Create
+
+		ddmFormFieldsMap = getDDMFormFieldsMap(_createDDMTemplate);
+
+		name1DDMFormField = ddmFormFieldsMap.get("name1");
+
+		Assert.assertNotNull(name1DDMFormField);
+	}
+
 	protected void updateDDMFormFieldRequiredProperty(
 		DDMForm ddmForm, String fieldName, boolean required) {
 
@@ -283,6 +362,18 @@ public class DDMFormTemplateSynchonizerTest extends BaseDDMTestCase {
 		for (DDMFormField ddmFormField : ddmFormFields) {
 			if (fieldName.equals(ddmFormField.getName())) {
 				ddmFormField.setRequired(required);
+			}
+		}
+	}
+
+	protected void updateDDMFormSelectFieldOptions(
+		DDMForm ddmForm, String selectFieldName, DDMFormFieldOptions ddmFormFieldOptions) {
+
+		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
+			if (selectFieldName.equals(ddmFormField.getName())) {
+				ddmFormField.setDDMFormFieldOptions(ddmFormFieldOptions);
 			}
 		}
 	}
